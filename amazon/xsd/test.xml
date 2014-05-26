@@ -1,0 +1,74 @@
+<div>
+	<div class="rowsapn">
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="formName">Form Name</label>
+			</span>
+			<span class="searchinput">
+				<input id="formName" name="formName" type="text" value="" />
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="modelName">Model Name</label>
+			</span>
+			<span class="searchinput">
+				<input id="modelName" name="modelName" type="text" value="" />
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="modelClass">Model Class</label>
+			</span>
+			<span class="searchinput">
+				<input id="modelClass" name="modelClass" type="text" value="" />
+				<script>
+					autoCompleteMap['modelClass'] =
+					'/gallery/common/classlist.json';
+				</script>
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="tableId">Result Table Id</label>
+			</span>
+			<span class="searchinput">
+				<input id="tableId" name="tableId" type="text" value="" />
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="resultFetchSize">Paging Size</label>
+			</span>
+			<span class="searchinput">
+				<input id="resultFetchSize" name="resultFetchSize" min="0"
+					max="1000" type="number" value="1000" />
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="defaultSort">Sort By</label>
+			</span>
+			<span class="searchinput">
+				<select id="defaultSort" name="defaultSort">
+					<option value="">Select Field Source Type</option>
+					<option value="DESC">DESC</option>
+					<option value="ASC">ASC</option>
+				</select>
+			</span>
+		</div>
+		<div style="float:left" class="searchrow">
+			<span class="searchlable">
+				<label for="searchMatchType">Search Type</label>
+			</span>
+			<span class="searchinput">
+				<select id="searchMatchType" name="searchMatchType">
+					<option value="">Select</option>
+					<option value="OR">OR</option>
+					<option value="AND">AND</option>
+				</select>
+			</span>
+		</div>
+	</div>
+</div>
+

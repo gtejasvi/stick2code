@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+
+	
+
+
+	<beans:bean id="amazonDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<beans:property name="driverClassName" value="${jdbc.sql.driverClassName}" />
+		<beans:property name="url" value="${jdbc.sql.url}" />
+		<beans:property name="username" value="${jdbc.sql.username}" />
+		<beans:property name="password" value="${jdbc.sql.password}" />
+	</beans:bean>
+
+	<beans:bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		p:dataSource-ref="amazonDataSource" >
+		
+
+		<beans:property name="persistenceUnitName" value="amazonPersistanceUnit" />
+		<beans:property name="jpaPropertyMap">
+			<map>
+				<entry key="hibernate.dialect" value="${hibernate.dialect}" />
+				<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
+				<entry key="hibernate.format_sql" value="${hibernate.format_sql}" />
+				<entry key="javax.persistence.validation.factory" value-ref="validator"/>
+			</map>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
+	<beans:bean id="transactionManager"
+		class="org.springframework.orm.jpa.JpaTransactionManager"
+		p:entityManagerFactory-ref="entityManagerFactory" />
+
+	
+	<tx:annotation-driven mode="aspectj"
+		transaction-manager="transactionManager" />
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="saveOrUpdate*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="allServices" expression="bean(*Service) || bean(*Dao)" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allServices" />
+	</aop:config>
+	
+	<jpa:repositories base-package="com.test.amazon.core"/>
+	
+	
+</beans:beans>

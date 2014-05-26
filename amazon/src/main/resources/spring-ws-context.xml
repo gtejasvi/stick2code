@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
+		http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<oxm:jaxb2-marshaller id="amazonMarshall"
+		contextPath="com.test.amazon.core.xsd" />
+
+	<beans:bean id="amazonRestTemplate" class="org.springframework.web.client.RestTemplate"></beans:bean>
+	
+	
+	<beans:bean id="restJaxbTemplate" class="org.springframework.web.client.RestTemplate">
+		<beans:property name="messageConverters">
+			<beans:list>
+				<beans:bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+					<beans:property name="marshaller" ref="jaxbMarshaller"/>
+					<beans:property name="unmarshaller" ref="jaxbMarshaller"/>
+				</beans:bean>
+			</beans:list>
+		</beans:property>
+	</beans:bean>	
+	
+
+	<oxm:jaxb2-marshaller id="jaxbMarshaller" contextPath="com.test.amazon.core.xsd" />
+
+	<beans:bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+	    <beans:property name="supportJaxbElementClass" value = "true"/>
+	    <beans:property name="contextPath" value="com.test.amazon.core.xsd" />
+	 </beans:bean>
+
+</beans:beans>

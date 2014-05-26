@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://webservices.amazon.com/AWSECommerceService/2011-08-01" targetNamespace="http://webservices.amazon.com/AWSECommerceService/2011-08-01"
+	elementFormDefault="qualified">
+	<xsd:element name="ItemSearchResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="OperationRequest">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="HTTPHeaders">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="Header">
+											<xsd:complexType>
+												<xsd:attribute name="Name" type="xsd:string" />
+												<xsd:attribute name="Value" type="xsd:string" />
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="RequestId" type="xsd:string" />
+							<xsd:element name="Arguments">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="Argument" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:attribute name="Name" type="xsd:string" />
+												<xsd:attribute name="Value" type="xsd:string" />
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="RequestProcessingTime" type="xsd:float" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Items">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Request">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="IsValid" type="xsd:string" />
+										<xsd:element name="ItemSearchRequest">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="ItemPage" type="xsd:integer" />
+													<xsd:element name="Keywords" type="xsd:string" />
+													<xsd:element name="ResponseGroup" type="xsd:string" />
+													<xsd:element name="SearchIndex" type="xsd:string" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="TotalResults" type="xsd:integer" />
+							<xsd:element name="TotalPages" type="xsd:integer" />
+							<xsd:element name="MoreSearchResultsUrl" type="xsd:string" />
+							<xsd:element name="Item" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="ASIN" type="xsd:string" />
+										<xsd:element name="DetailPageURL" type="xsd:string" />
+										<xsd:element name="ItemLinks">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="ItemLink" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Description" type="xsd:string" />
+																<xsd:element name="URL" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="SalesRank" minOccurs="0"
+											type="xsd:integer" />
+										<xsd:element name="SmallImage">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="URL" type="xsd:string" />
+													<xsd:element name="Height">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Width">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="MediumImage">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="URL" type="xsd:string" />
+													<xsd:element name="Height">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Width">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="LargeImage">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="URL" type="xsd:string" />
+													<xsd:element name="Height">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Width">
+														<xsd:complexType>
+															<xsd:simpleContent>
+																<xsd:extension base="xsd:integer">
+																	<xsd:attribute name="Units" type="xsd:string" />
+																</xsd:extension>
+															</xsd:simpleContent>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="ImageSets">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="ImageSet" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="SwatchImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="SmallImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="ThumbnailImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="TinyImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="MediumImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="LargeImage">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="URL" type="xsd:string" />
+																			<xsd:element name="Height">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																			<xsd:element name="Width">
+																				<xsd:complexType>
+																					<xsd:simpleContent>
+																						<xsd:extension base="xsd:integer">
+																							<xsd:attribute name="Units" type="xsd:string" />
+																						</xsd:extension>
+																					</xsd:simpleContent>
+																				</xsd:complexType>
+																			</xsd:element>
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+															<xsd:attribute name="Category" type="xsd:string" />
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="ItemAttributes">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="Author" maxOccurs="unbounded"
+														type="xsd:string" />
+													<xsd:element name="Binding" type="xsd:string" />
+													<xsd:element name="EAN" minOccurs="0" type="xsd:integer" />
+													<xsd:element name="EANList" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="EANListElement"
+																	maxOccurs="unbounded" type="xsd:integer" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Edition" type="xsd:string" />
+													<xsd:element name="ISBN" minOccurs="0"
+														type="xsd:integer" />
+													<xsd:element name="IsEligibleForTradeIn"
+														minOccurs="0" type="xsd:integer" />
+													<xsd:element name="ItemDimensions" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Height">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Length">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Weight">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:float">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Width">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Label" type="xsd:string" />
+													<xsd:element name="Languages">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Language" maxOccurs="unbounded">
+																	<xsd:complexType>
+																		<xsd:sequence>
+																			<xsd:element name="Name" type="xsd:string" />
+																			<xsd:element name="Type" type="xsd:string" />
+																		</xsd:sequence>
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="ListPrice" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Amount" type="xsd:integer" />
+																<xsd:element name="CurrencyCode" type="xsd:string" />
+																<xsd:element name="FormattedPrice" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="Manufacturer" type="xsd:string" />
+													<xsd:element name="NumberOfItems" minOccurs="0"
+														type="xsd:integer" />
+													<xsd:element name="NumberOfPages" type="xsd:integer" />
+													<xsd:element name="PackageDimensions"
+														minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Height">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Length">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Weight">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+																<xsd:element name="Width">
+																	<xsd:complexType>
+																		<xsd:simpleContent>
+																			<xsd:extension base="xsd:integer">
+																				<xsd:attribute name="Units" type="xsd:string" />
+																			</xsd:extension>
+																		</xsd:simpleContent>
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="PackageQuantity" minOccurs="0"
+														type="xsd:integer" />
+													<xsd:element name="ProductGroup" type="xsd:string" />
+													<xsd:element name="ProductTypeName" type="xsd:string" />
+													<xsd:element name="PublicationDate" type="xsd:string" />
+													<xsd:element name="Publisher" type="xsd:string" />
+													<xsd:element name="Studio" type="xsd:string" />
+													<xsd:element name="Title" type="xsd:string" />
+													<xsd:element name="TradeInValue" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Amount" type="xsd:integer" />
+																<xsd:element name="CurrencyCode" type="xsd:string" />
+																<xsd:element name="FormattedPrice" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="EISBN" minOccurs="0"
+														type="xsd:integer" />
+													<xsd:element name="Format" minOccurs="0"
+														type="xsd:string" />
+													<xsd:element name="ReleaseDate" minOccurs="0"
+														type="xsd:string" />
+													<xsd:element name="Feature" maxOccurs="unbounded"
+														minOccurs="0" type="xsd:string" />
+													<xsd:element name="Brand" minOccurs="0"
+														type="xsd:string" />
+													<xsd:element name="CatalogNumberList"
+														minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="CatalogNumberListElement"
+																	type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="IsAdultProduct" minOccurs="0"
+														type="xsd:integer" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="OfferSummary" minOccurs="0">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="LowestNewPrice">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Amount" type="xsd:integer" />
+																<xsd:element name="CurrencyCode" type="xsd:string" />
+																<xsd:element name="FormattedPrice" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="LowestUsedPrice">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Amount" type="xsd:integer" />
+																<xsd:element name="CurrencyCode" type="xsd:string" />
+																<xsd:element name="FormattedPrice" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="TotalNew" type="xsd:integer" />
+													<xsd:element name="TotalUsed" type="xsd:integer" />
+													<xsd:element name="TotalCollectible" type="xsd:integer" />
+													<xsd:element name="TotalRefurbished" type="xsd:integer" />
+													<xsd:element name="LowestCollectiblePrice"
+														minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Amount" type="xsd:integer" />
+																<xsd:element name="CurrencyCode" type="xsd:string" />
+																<xsd:element name="FormattedPrice" type="xsd:string" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="EditorialReviews">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="EditorialReview" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="Source" type="xsd:string" />
+																<xsd:element name="Content" type="xsd:string" />
+																<xsd:element name="IsLinkSuppressed" type="xsd:integer" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

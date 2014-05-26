@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>UTF-8</comment>
+	<entry key="jdbc.sql.driverClassName">org.h2.Driver</entry>
+	<!-- <entry key="jdbc.sql.url">jdbc:h2:tcp://file/data/isodb;DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=2</entry>-->
+	<entry key="jdbc.sql.url">jdbc:h2:tcp://localhost/~/amazondb;DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=2</entry>
+	<entry key="jdbc.sql.username">sa</entry>
+	<entry key="jdbc.sql.password"></entry>
+	<entry key="hibernate.dialect">org.hibernate.dialect.H2Dialect</entry>
+	<entry key="hibernate.hbm2ddl.auto">create</entry>
+	<entry key="hibernate.format_sql">true</entry>
+	<entry key="hibernate.show_sql">true</entry>
+</properties>
