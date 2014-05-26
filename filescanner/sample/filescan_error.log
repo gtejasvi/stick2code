@@ -91,3 +91,97 @@ java.lang.NoSuchMethodError: javax.el. .newInstance()Ljavax/el/ExpressionFactory
  at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92)
  at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
  at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:644)
+ 
+ERROR - LoggingInfo={
+	message:############ Exception ############
+------------>>!Debug Info[ Line# 157 Class Name# com.hibernate.validator.internal.engine.messageinterpolation.InterpolationTerm Method# invoke ]
+[<Timestamp>: <2014-04-29 17:06:22.623>]
+[<OccId>: <GT>]
+[<FlowId>: <LOGIN.LOAD>]
+[<UserType>: <1> ]
+[<SessionId>: <F0451E180B02D6F83DF7B185AEA74318>]
+[<IP>: <0:0:0:0:0:0:0:1>]
+[<Browser>: <NOT AVAILABLE>]
+------------>>!Critical Exception Info
+[<Error Code>: <56565>]
+[<Error NameSpace>: <CRIT>]
+[<Error Desc>: <56565>]
+[<Incidence Code>: <FDEFKJHFKJ232>]
+[<Incidence Desc>: <Value can not be retrieved>]
+[<Additonal Message>:<NOT PROVIDED>]
+------------>>!StackTrace
+}
+java.lang.NoSuchMethodError: javax.el. .newInstance()Ljavax/el/ExpressionFactory;
+ at org.hibernate.validator.internal.engine.messageinterpolation.InterpolationTerm.(InterpolationTerm.java:60)
+ at org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator.interpolateExpression(ResourceBundleMessageInterpolator.java:227)
+ at org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator.interpolateMessage(ResourceBundleMessageInterpolator.java:187)
+ at org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator.interpolate(ResourceBundleMessageInterpolator.java:120)
+ at org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator.interpolate(LocaleContextMessageInterpolator.java:50)
+ at org.hibernate.validator.internal.engine.ValidationContext.interpolate(ValidationContext.java:370)
+ at org.hibernate.validator.internal.engine.ValidationContext.createConstraintViolation(ValidationContext.java:284)
+ at org.hibernate.validator.internal.engine.ValidationContext.createConstraintViolations(ValidationContext.java:246)
+ at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.validateSingleConstraint(ConstraintTree.java:289)
+ at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.validateConstraints(ConstraintTree.java:133)
+ at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.validateConstraints(ConstraintTree.java:91)
+ at org.hibernate.validator.internal.metadata.core.MetaConstraint.validateConstraint(MetaConstraint.java:85)
+ at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraint(ValidatorImpl.java:478)
+ at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForDefaultGroup(ValidatorImpl.java:424)
+ at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForCurrentGroup(ValidatorImpl.java:388)
+ at org.hibernate.validator.internal.engine.ValidatorImpl.validateInContext(ValidatorImpl.java:340)
+ at org.hibernate.validator.internal.engine.ValidatorImpl.validate(ValidatorImpl.java:158)
+ at org.hibernate.cfg.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:137)
+ at org.hibernate.cfg.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:95)
+ at org.hibernate.action.internal.EntityIdentityInsertAction.preInsert(EntityIdentityInsertAction.java:202)
+ at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:91)
+ at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:480)
+ at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:191)
+ at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:175)
+ at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:210)
+ at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:324)
+ at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:288)
+ at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:194)
+ at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:125)
+ at org.hibernate.jpa.event.internal.core.JpaPersistEventListener.saveWithGeneratedId(JpaPersistEventListener.java:84)
+ at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:206)
+ at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:149)
+ at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:75)
+ at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:807)
+ at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:780)
+ at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:785)
+ at org.hibernate.jpa.spi.AbstractEntityManagerImpl.persist(AbstractEntityManagerImpl.java:1181)
+ at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+ at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+ at java.lang.reflect.Method.invoke(Method.java:606)
+ at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:257)
+ at com.sun.proxy.$Proxy33.persist(Unknown Source)
+ at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:358)
+ at sun.reflect.GeneratedMethodAccessor16.invoke(Unknown Source)
+ at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+ at java.lang.reflect.Method.invoke(Method.java:606)
+ at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.executeMethodOn(RepositoryFactorySupport.java:358)
+ at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.invoke(RepositoryFactorySupport.java:343)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:98)
+ at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:262)
+ at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:95)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:136)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.data.jpa.repository.support.LockModeRepositoryPostProcessor$LockModePopulatingMethodIntercceptor.invoke(LockModeRepositoryPostProcessor.java:92)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:207)
+ at com.sun.proxy.$Proxy35.save(Unknown Source)
+ at com.test.amazon.core.AmazonItemRepositoryService.saveAmazonItemEntity(AmazonItemRepositoryService.java:16)
+ at com.test.amazon.core.AmazonItemRepositoryService$$FastClassBySpringCGLIB$$a7cf6840.invoke()
+ at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+ at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:711)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157)
+ at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:98)
+ at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:262)
+ at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:95)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92)
+ at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+ at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:644)

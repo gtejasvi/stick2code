@@ -41,7 +41,6 @@ public class StringMatchUtil {
 			}
 			
 		}
-		
 		PatternDetail patternDetail = new PatternDetail();
 		patternDetail.setPattern(regex);
 		patternDetail.setShortPattern(shortPattern);

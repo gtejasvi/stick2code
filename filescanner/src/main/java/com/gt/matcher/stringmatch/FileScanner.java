@@ -40,11 +40,14 @@ public class FileScanner {
 
 		fileReadBuffer += 5;
 		bufferedLine = new StringBuilder();
-		while (null != (line = br.readLine())
-				&& fileLineList.size() < fileReadBuffer) {
+		while (null != (line = br.readLine())) {
 			fileLineList.add(line);
 			bufferedLine.append(line + "\n");
+			if(fileLineList.size() >= fileReadBuffer){
+				break;
+			}
 		}
+		
 	}
 
 	private void addMatchLine(int lineNumber,String patternName,Map<String,List<Integer>> patternPositionMap){
@@ -58,31 +61,53 @@ public class FileScanner {
 	
 	public Map<String,List<Integer>> matchInFile() throws IOException {
 		Map<String,List<Integer>> patternPositionMap = new HashMap<String, List<Integer>>();
+		String line = getCurrentLine();
 		do {
+			
+			line = getCurrentLine();
+			//logger.debug("["+lineNumber+"],Line["+line+"]");
+			if(line == null || line.trim().equals("")){
+				continue;
+			}
+			
 			for (String patternName : patternDetailMap.keySet()) {
 				PatternDetail patternDetail = patternDetailMap.get(patternName);
 				
-				if(patternDetail.getShortPattern().matcher(bufferedLine).lookingAt()){
+				if(patternDetail.getShortPattern().matcher(line).lookingAt()){
+					//logger.debug("Pattern::"+patternDetail.getPattern());
+					//logger.debug("----First Line Match::"+line);
+					
+					//logger.debug("--Buffered Line line::"+bufferedLine);
+					
 					if(patternDetail.getPattern().matcher(bufferedLine).lookingAt()){
+						//logger.debug("line::"+bufferedLine.substring(0, 10));
 						addMatchLine(lineNumber,patternName,patternPositionMap);
 					}
 					
 				}
 				
 			}
-		}while (null != getNextLine());
+		}while (null != (line = getNextLine()));
 		
 		return patternPositionMap;
 	}
 
+	private String getCurrentLine() throws IOException {
+		if(fileLineList != null && fileLineList.size() > 0){
+			return fileLineList.get(0);
+		}
+		
+		return null;
+	}
 	private String getNextLine() throws IOException {
-
+		
 		String line = br.readLine();
 		if (line != null) {
 			fileLineList.add(line);
 			bufferedLine.append(line + "\n");
-			lineNumber++;
+			
 		}
+		
 		if (fileLineList.isEmpty()) {
 			return null;
 		}
@@ -95,9 +120,7 @@ public class FileScanner {
 		if (fileLineList.isEmpty()) {
 			return null;
 		}
-		
+		lineNumber++;
 		return fileLineList.get(0);
 	}
-
-
 }
