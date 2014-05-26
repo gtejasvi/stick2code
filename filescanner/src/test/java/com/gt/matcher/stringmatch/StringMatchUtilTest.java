@@ -59,9 +59,12 @@ public class StringMatchUtilTest {
 		patternDetailMap.put("1",pattern);
 		
 		FileScanner fileScanner = new FileScanner(fileName, patternDetailMap);
-		fileScanner.matchInFile();
+		Map<String,List<Integer>> patternPositionMap = fileScanner.matchInFile();
+		System.out.println(patternPositionMap);
 		
 		
 	}
+	
+	
 
 }

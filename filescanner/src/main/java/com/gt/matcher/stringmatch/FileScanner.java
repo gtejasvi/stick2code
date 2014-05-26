@@ -3,6 +3,8 @@ package com.gt.matcher.stringmatch;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,34 +47,32 @@ public class FileScanner {
 		}
 	}
 
-	public void matchInFile() throws IOException {
+	private void addMatchLine(int lineNumber,String patternName,Map<String,List<Integer>> patternPositionMap){
+		List<Integer> matchLineArray = patternPositionMap.get(patternName);
+		if(matchLineArray == null){
+			matchLineArray = new ArrayList<Integer>();
+			patternPositionMap.put(patternName, matchLineArray);
+		}
+		matchLineArray.add(lineNumber);
+	}
+	
+	public Map<String,List<Integer>> matchInFile() throws IOException {
+		Map<String,List<Integer>> patternPositionMap = new HashMap<String, List<Integer>>();
 		do {
 			for (String patternName : patternDetailMap.keySet()) {
 				PatternDetail patternDetail = patternDetailMap.get(patternName);
-			
-/*				logger.debug("Short Pattern::"
-						+ patternDetail.getShortPattern().pattern());
-				logger.debug("Buffered String::"+bufferedLine.toString());
-*/				
+				
 				if(patternDetail.getShortPattern().matcher(bufferedLine).lookingAt()){
-					logger.debug("Short ::Line Number::"
-							+ lineNumber);
-					logger.debug(patternDetail.getPattern().pattern());
-					//logger.debug(bufferedLine.toString());
 					if(patternDetail.getPattern().matcher(bufferedLine).lookingAt()){
-						logger.debug("Line Number::"
-								+ lineNumber);
+						addMatchLine(lineNumber,patternName,patternPositionMap);
 					}
 					
 				}
 				
-				/*
-				 * if(pattern.matcher(bufferedLine).matches()){
-				 * logger.debug("Pattern Matched at Line ::"+ lineNumber); }
-				 */
 			}
 		}while (null != getNextLine());
-
+		
+		return patternPositionMap;
 	}
 
 	private String getNextLine() throws IOException {
