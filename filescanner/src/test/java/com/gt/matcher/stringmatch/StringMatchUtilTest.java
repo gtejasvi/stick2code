@@ -41,12 +41,14 @@ public class StringMatchUtilTest {
 	}
 
 	
-	
+	@Test
 	public void testNewLine(){
-		System.out.print("Test"+"\n"+"Test2");
+		File f = new File("./file");
+		System.out.println(f.getAbsolutePath());//f.getAbsoluteFile().getAbsolutePath()
+		System.out.println(f.getAbsoluteFile().getAbsolutePath());
 	}
 	
-	@Test
+	
 	public void testGetStringDifferencePercentage() throws IOException {
 		StringMatchUtil stringMatchUtil = new StringMatchUtil();
 		
