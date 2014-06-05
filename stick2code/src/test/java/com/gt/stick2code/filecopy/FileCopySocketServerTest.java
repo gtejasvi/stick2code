@@ -1,9 +1,7 @@
 package com.gt.stick2code.filecopy;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Socket;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

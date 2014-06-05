@@ -10,7 +10,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gt.stick2code.filecopy.common.Ack;
 import com.gt.stick2code.filecopy.common.FileCopyParameters;
 import com.gt.stick2code.filecopy.common.FileDetails;
 import com.gt.stick2code.filecopy.common.ReadWriteUtil;
