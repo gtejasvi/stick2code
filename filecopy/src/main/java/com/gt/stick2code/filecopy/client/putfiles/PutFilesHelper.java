@@ -5,10 +5,17 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,21 +35,44 @@ public class PutFilesHelper implements Runnable {
 	long timeout = 1000000;
 	List<FileDetails> fileDetailList;
 	FileCopyParameters params;
+	String password;
 	String key;
 
 	public PutFilesHelper(String host, int port,
-			List<FileDetails> fileDetailList, FileCopyParameters params,String key) {
+			List<FileDetails> fileDetailList, FileCopyParameters params,
+			String password, String key) {
 		super();
 		this.host = host;
 		this.port = port;
 		this.fileDetailList = fileDetailList;
 		this.params = params;
+		this.password = password;
 		this.key = key;
 	}
 
 	public void run() {
 		try {
-			processPutFilesToTarget();
+			try {
+				processPutFilesToTarget();
+			} catch (InvalidKeyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchPaddingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalBlockSizeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (BadPaddingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DecoderException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (UnknownHostException e) {
 			logger.error("", e);
 		} catch (ClassNotFoundException e) {
@@ -58,9 +88,15 @@ public class PutFilesHelper implements Runnable {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
+	 * @throws DecoderException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * @throws NoSuchPaddingException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeyException 
 	 */
 	private void processPutFilesToTarget() throws UnknownHostException,
-			IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		Socket socket = new Socket(host, port);
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -70,7 +106,7 @@ public class PutFilesHelper implements Runnable {
 			bos = new BufferedOutputStream(socket.getOutputStream());
 
 			if (ReadWriteUtil.connectToServer(bis, bos,
-					RequestTypeEnum.PUTFILES, params,key)) {
+					RequestTypeEnum.PUTFILES, params, password,key)) {
 				ReadWriteUtil.writeObjectToStream(bos, fileDetailList);
 				if (ReadWriteUtil.getAcknowledgement(bis)) {
 					ZipOutputStream zipOutputStream = new ZipOutputStream(bos);
@@ -96,7 +132,7 @@ public class PutFilesHelper implements Runnable {
 			List<FileDetails> fileDetailList = threadListMap.get(thread);
 
 			PutFilesHelper putFiles = new PutFilesHelper(host, port,
-					fileDetailList, fileCopyParameters,key);
+					fileDetailList, fileCopyParameters,password, key);
 
 			Thread th = new Thread(putFiles);
 			threads[index++] = th;

@@ -15,6 +15,7 @@ public class FileCopyParameters implements Serializable{
 	private boolean overwrite;
 	private long transferChunkSize;
 	
+	
 	public String getSourceFile() {
 		return sourceFile;
 	}

@@ -2,6 +2,7 @@ package com.gt.stick2code.filecopy.client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -10,9 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gt.stick2code.filecopy.common.FileCopyConstants;
 import com.gt.stick2code.filecopy.common.FileCopyParameters;
 import com.gt.stick2code.filecopy.common.FileCopyUtil;
 import com.gt.stick2code.filecopy.common.FileDetails;
@@ -33,11 +40,12 @@ public class GetFileSocketClient extends Thread {
 	boolean overwrite = false;
 	boolean securemode = false;
 	String key ;
+	String password;
 	
 	FileCopyParameters fileCopyParameters;
 
 	public GetFileSocketClient(String host, int port,boolean securemode, FileCopyParameters fileCopyParameters,
-			 int threads,String key) {
+			 int threads,String password,String key) {
 		this.host = host;
 		this.port = port;
 		this.fileCopyParameters = fileCopyParameters;
@@ -46,6 +54,7 @@ public class GetFileSocketClient extends Thread {
 				: transferChunkSize;
 		this.securemode = securemode;
 		this.key = key;
+		this.password = password;
 
 	}
 
@@ -61,7 +70,7 @@ public class GetFileSocketClient extends Thread {
 	public static void main(String[] arg) throws IOException,
 			ClassNotFoundException, InterruptedException {
 
-		String usage = "Usage : <Host> <Port> <Src file/folder> <Targer file/Folder> <[threads]> <[max file chunk]> <[Encryption Key]>] [ -[r/R recursive][-o/O overwrite][-s secure transfer]]";
+		String usage = "Usage : <Host> <Port> <Src file/folder> <Targer file/Folder> <[threads]> <[password]> <[Encryption Key]> <[max file chunk]>  [ -[r/R recursive][-o/O overwrite][-s secure transfer]]";
 		
 		List<String> argList = new ArrayList<String>();
 		boolean recursive = false;
@@ -78,7 +87,7 @@ public class GetFileSocketClient extends Thread {
 					case 'r' : recursive = true;break;
 					case 'o' : overwrite = true;break;
 					case 's' : securemode = true;break;
-					default : System.out.println("Invalid Argument :: " + usage);System.exit(0);
+					default : System.out.println("Invalid Argument :: ["+argChar+"]" + usage);System.exit(0);
 					}
 				}
 				continue;
@@ -86,33 +95,50 @@ public class GetFileSocketClient extends Thread {
 			
 			argList.add(argument);
 		}
+		
 		String[] args = argList.toArray(new String[0]);
 		if (args.length < 4) {
 			System.out.println(usage);
 			System.exit(1);
 		}
 
-		String host = args[0];
-		int port = Integer.parseInt(args[1]);
-		String sourceFile = args[2];
-		String targetFile = args[3];
+		int argCnt = 0;
+		String host = args[argCnt++];
+		int port = Integer.parseInt(args[argCnt++]);
+		String sourceFile = args[argCnt++];
+		String targetFile = args[argCnt++];
+
+
+		
 		int threads = 1;
-		if (args.length > 4) {
-			threads = Integer.parseInt(args[4]);
+		if (args.length > argCnt) {
+			threads = Integer.parseInt(args[argCnt++]);
 		}
+
+		String password = null;
+		if (args.length > argCnt) {
+			password = args[argCnt++];
+		} else {
+			password = "";
+		}
+
+		String key = null;
+		if (args.length > argCnt) {
+			key = args[argCnt++];
+		} else {
+			key = FileCopyUtil.getPropertyVal(FileCopyConstants.DEFAULT_KEY);
+
+		}
+
 		long transferChunkSize = 0;
-		if (args.length > 5) {
-			transferChunkSize = ReadWriteUtil.getSize(args[5]);
+		//7th argument
+		if (args.length > argCnt) {
+			transferChunkSize = ReadWriteUtil.getSize(args[argCnt++]);
 		} else {
 			transferChunkSize = ReadWriteUtil.getSize("50M");
 		}
 		
-		String key = null;
-		if (args.length > 6) {
-			key = args[6];
-		} else {
-			key = FileCopySocketConnectionUtil.DEFAULT_KEY;
-		}
+		
 		
 		FileCopyParameters fileCopyParameters = new FileCopyParameters();
 		fileCopyParameters.setRecursive(recursive);
@@ -122,7 +148,7 @@ public class GetFileSocketClient extends Thread {
 		fileCopyParameters.setTransferChunkSize(transferChunkSize);
 		
 		GetFileSocketClient client = new GetFileSocketClient(host,
-				port,securemode, fileCopyParameters, threads,key);
+				port,securemode, fileCopyParameters, threads,password,key);
 		try{
 		client.process();
 		}catch(Exception e){
@@ -131,13 +157,13 @@ public class GetFileSocketClient extends Thread {
 	}
 
 	private void process() throws UnknownHostException, IOException,
-			ClassNotFoundException, InterruptedException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+			ClassNotFoundException, InterruptedException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		
 		
 		
 		logger.debug("Sending the Source File to Server::[" + fileCopyParameters.getSourceFile() + "]");
 		GetFileListHelper getFileList = new GetFileListHelper(host,
-				port,securemode,key);
+				port,securemode,password,key);
 		List<FileDetails> fileDetailList = getFileList
 				.processGetFileListFromSource(fileCopyParameters);
 		
@@ -152,7 +178,7 @@ public class GetFileSocketClient extends Thread {
 			Map<Integer, List<FileDetails>> threadListMap = FileCopyUtil
 					.getFileListForThread(splitFileDetailsList, threads);
 			GetFilesHelper getFiles = new GetFilesHelper(host,
-					port,securemode, null, fileCopyParameters,key);
+					port,securemode, null, fileCopyParameters,password,key);
 			
 			getFiles.processGetFilesFromSource(threadListMap, fileCopyParameters);
 			MergeFilesUtil mergeFilesUtil = new MergeFilesUtil();

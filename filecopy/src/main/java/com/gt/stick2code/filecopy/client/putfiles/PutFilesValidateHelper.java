@@ -5,8 +5,15 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,15 +33,17 @@ public class PutFilesValidateHelper  {
 	long timeout = 1000000;
 	List<FileDetails> fileDetailList;
 	FileCopyParameters params;
+	String password;
 	String key;
 
 	public PutFilesValidateHelper(String host, int port,
-			List<FileDetails> fileDetailList, FileCopyParameters params,String key) {
+			List<FileDetails> fileDetailList, FileCopyParameters params,String password,String key) {
 		super();
 		this.host = host;
 		this.port = port;
 		this.fileDetailList = fileDetailList;
 		this.params = params;
+		this.password = password;
 		this.key = key;
 	}
 
@@ -50,9 +59,15 @@ public class PutFilesValidateHelper  {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 * @throws ClassNotFoundException
+	 * @throws DecoderException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * @throws NoSuchPaddingException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeyException 
 	 */
 	public void process() throws UnknownHostException,
-			IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		Socket socket = new Socket(host, port);
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -62,7 +77,7 @@ public class PutFilesValidateHelper  {
 			bos = new BufferedOutputStream(socket.getOutputStream());
 
 			if (ReadWriteUtil.connectToServer(bis, bos,
-					RequestTypeEnum.PUTFILEVALIDATE, params,key)) {
+					RequestTypeEnum.PUTFILEVALIDATE, params,password,key)) {
 				ReadWriteUtil.writeObjectToStream(bos, fileDetailList);
 				if(false == ReadWriteUtil.getAcknowledgement(bis)){
 					throw new IOException("Server Responded with Validation Failure");

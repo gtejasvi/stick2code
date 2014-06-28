@@ -21,7 +21,7 @@ public class FileCopySocketServerTest {
 
 	@Test
 	public void testGetFileDetailList() throws FileNotFoundException {
-		FileCopySocketServer fileCopyServer = new FileCopySocketServer(new Socket(),3);
+		FileCopySocketServer fileCopyServer = new FileCopySocketServer(new Socket(),3,"","");
 		
 	}
 

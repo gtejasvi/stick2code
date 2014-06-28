@@ -15,9 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gt.stick2code.filecopy.common.Ack;
+import com.gt.stick2code.filecopy.common.FileCopyConstants;
 import com.gt.stick2code.filecopy.common.FileCopyParameters;
+import com.gt.stick2code.filecopy.common.FileCopyUtil;
 import com.gt.stick2code.filecopy.common.ReadWriteUtil;
+import com.gt.stick2code.filecopy.common.RequestDetails;
 import com.gt.stick2code.filecopy.common.RequestTypeEnum;
+import com.gt.stick2code.filecopy.security.FileCopySocketConnectionUtil;
+import com.gt.stick2code.filecopy.security.PasswordWrapper;
 
 /**
  * This class acts as the Server for Copying the File. It will start andl listen
@@ -36,13 +41,17 @@ public class FileCopySocketServer extends Thread {
 	private static ServerSocket serverSocket;
 	private Socket socket;
 	private int threads;
+	private String password;
+	private String key;
 
-	public FileCopySocketServer(Socket socket, int threads) {
+	public FileCopySocketServer(Socket socket, int threads,String password,String key) {
 		this.socket = socket;
 		if (threads < 1) {
 			threads = 1;
 		}
 		this.threads = threads;
+		this.password = password;
+		this.key = key;
 	}
 
 	public static void main(String[] arg) throws IOException {
@@ -50,7 +59,7 @@ public class FileCopySocketServer extends Thread {
 		int port = 50000;
 		boolean securemode = false;
 
-		String usage = ": [<port>] [-s secure mode] ";
+		String usage = ": [<port>] [<password>] [<key>] [<threads>] [-s secure mode] ";
 		List<String> argList = new ArrayList<String>();
 		for (String argument : arg) {
 			// System.out.println("argument::"+argument);
@@ -75,15 +84,28 @@ public class FileCopySocketServer extends Thread {
 			argList.add(argument);
 		}
 		String[] args = argList.toArray(new String[0]);
-
-		if (args.length > 0) {
-			String sPort = args[0];
+		int argCnt = 0;
+		if (args.length > argCnt) {
+			String sPort = args[argCnt++];
 			port = Integer.parseInt(sPort);
 
 		}
+		
+		String password = "";
+		if (args.length > argCnt) {
+			password = args[argCnt++];
+		}
+		
+		String key = null;
+		if (args.length > argCnt) {
+			key = args[argCnt++];
+		} else {
+			key = FileCopyUtil.getPropertyVal(FileCopyConstants.DEFAULT_KEY);
+		}
+		
 		int threads = 1;
-		if (args.length > 1) {
-			threads = Integer.parseInt(args[1]);
+		if (args.length > argCnt) {
+			threads = Integer.parseInt(args[argCnt++]);
 		}
 
 		if (securemode) {
@@ -99,7 +121,7 @@ public class FileCopySocketServer extends Thread {
 		while (true) {
 			try {
 				FileCopySocketServer fileCopyServerThread = new FileCopySocketServer(
-						serverSocket.accept(), threads);
+						serverSocket.accept(), threads,password,key);
 				fileCopyServerThread.start();
 
 			} catch (Exception e) {
@@ -135,7 +157,7 @@ public class FileCopySocketServer extends Thread {
 		BufferedOutputStream bos = new BufferedOutputStream(
 				socket.getOutputStream());
 		logger.info("Fetch the Request Type");
-		RequestTypeEnum requestType = ReadWriteUtil.getRequestType(bis, bos);
+		RequestTypeEnum requestType = ReadWriteUtil.getRequestType(bis, bos,password,key);
 		logger.info("Request Received::[" + requestType + "]");
 		FileCopyParameters params = (FileCopyParameters) ReadWriteUtil
 				.readInputStreamObject(bis);

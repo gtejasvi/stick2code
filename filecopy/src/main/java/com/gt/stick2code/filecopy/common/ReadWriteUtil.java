@@ -10,9 +10,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.gt.stick2code.filecopy.security.FileCopySocketConnectionUtil;
 
 public class ReadWriteUtil {
 
@@ -123,6 +132,7 @@ public class ReadWriteUtil {
 		ObjectOutputStream objectByteOS = new ObjectOutputStream(baos);
 		objectByteOS.writeObject(wrapper);
 		objectByteOS.flush();
+		
 		logger.debug("writeObjectToStream:size:" + baos.toByteArray().length);
 		byte[] objectBBytes = baos.toByteArray();
 		byte[] lengthBytes = getLengthDigitBytes(objectBBytes.length);
@@ -236,10 +246,13 @@ public class ReadWriteUtil {
 
 	public static boolean connectToServer(BufferedInputStream bis,
 			BufferedOutputStream bos, RequestTypeEnum requestType,
-			FileCopyParameters params,String key) throws ClassNotFoundException,
-			IOException {
+			FileCopyParameters params, String password, String key)
+			throws ClassNotFoundException, IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		logger.info("Connecting:: To Service::" + requestType);
-		ReadWriteUtil.writeObjectToStream(bos, requestType);
+		RequestDetails reqDetails = new RequestDetails();
+		reqDetails.setRequestType(requestType);
+		reqDetails.setEncPwd(FileCopySocketConnectionUtil.encryptPwd(password, key));
+		ReadWriteUtil.writeObjectToStream(bos, reqDetails);
 
 		if (ReadWriteUtil.getAcknowledgement(bis)) {
 			logger.info("Service Connected::" + requestType
@@ -254,15 +267,15 @@ public class ReadWriteUtil {
 		return false;
 	}
 
-	public static RequestTypeEnum getRequestType(InputStream is, OutputStream os)
+	public static RequestTypeEnum getRequestType(InputStream is, OutputStream os,String password,String key)
 			throws IOException, ClassNotFoundException {
-		RequestTypeEnum requestTypeEnum = (RequestTypeEnum) ReadWriteUtil
+		RequestDetails requestDetails = (RequestDetails) ReadWriteUtil
 				.readInputStreamObject(is);
 		RequestResponseWrapper responseWrapper = new RequestResponseWrapper(
 				Ack.SUCCESS);
 		responseWrapper.setObject(Ack.SUCCESS);
 		ReadWriteUtil.writeObjectToStream(os, responseWrapper);
-		return requestTypeEnum;
+		return requestDetails.getRequestType();
 
 	}
 }

@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.net.ssl.SSLSocket;
 
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +39,13 @@ public class GetFilesHelper implements Runnable {
 	int port;
 	List<FileDetails> fileDetailList;
 	FileCopyParameters params;
+	String password;
 	String key;
 	boolean securemode;
 
 	public GetFilesHelper(String host, int port,boolean securemode,
 			List<FileDetails> fileDetailList, FileCopyParameters params,
-			String key) {
+			String password,String key) {
 		super();
 		this.host = host;
 		this.port = port;
@@ -47,6 +53,7 @@ public class GetFilesHelper implements Runnable {
 		this.fileDetailList = fileDetailList;
 		this.params = params;
 		this.key = key;
+		this.password = password;
 	}
 
 	public void run() {
@@ -68,6 +75,16 @@ public class GetFilesHelper implements Runnable {
 			logger.error("", e);
 		} catch (IOException e) {
 			logger.error("", e);
+		} catch (InvalidKeyException e) {
+			logger.error("", e);
+		} catch (NoSuchPaddingException e) {
+			logger.error("", e);
+		} catch (IllegalBlockSizeException e) {
+			logger.error("", e);
+		} catch (BadPaddingException e) {
+			logger.error("", e);
+		} catch (DecoderException e) {
+			logger.error("", e);
 		}
 	}
 
@@ -87,10 +104,15 @@ public class GetFilesHelper implements Runnable {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyStoreException
 	 * @throws KeyManagementException
+	 * @throws DecoderException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * @throws NoSuchPaddingException 
+	 * @throws InvalidKeyException 
 	 */
 	private void processGetFilesFromSource() throws UnknownHostException,
 			IOException, ClassNotFoundException, KeyManagementException,
-			KeyStoreException, NoSuchAlgorithmException, CertificateException {
+			KeyStoreException, NoSuchAlgorithmException, CertificateException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 
 		// Socket socket = new Socket(host,port);
 		// SSLSocket socket =
@@ -105,7 +127,7 @@ public class GetFilesHelper implements Runnable {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
 			if (ReadWriteUtil.connectToServer(bis, bos,
-					RequestTypeEnum.GETFILES, params, key)) {
+					RequestTypeEnum.GETFILES, params,password, key)) {
 
 				ReadWriteUtil.writeObjectToStream(bos, fileDetailList);
 				ZipInputStream zipInputStream = new ZipInputStream(bis);
@@ -129,7 +151,7 @@ public class GetFilesHelper implements Runnable {
 			List<FileDetails> fileDetailList = threadListMap.get(thread);
 
 			GetFilesHelper fileCopyGetFiles = new GetFilesHelper(host, port,securemode,
-					fileDetailList, fileCopyParameters, key);
+					fileDetailList, fileCopyParameters,password, key);
 
 			Thread th = new Thread(fileCopyGetFiles);
 			threads[index++] = th;

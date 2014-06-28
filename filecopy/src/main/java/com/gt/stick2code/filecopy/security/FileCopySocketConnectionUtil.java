@@ -2,12 +2,16 @@ package com.gt.stick2code.filecopy.security;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -45,47 +49,140 @@ import org.slf4j.LoggerFactory;
 import com.gt.stick2code.filecopy.common.FileCopyConstants;
 import com.gt.stick2code.filecopy.common.FileCopyUtil;
 
+/**
+ * Utility Class to get a Socket connection, generate AES key etc.
+ * 
+ * @author Ganaraj
+ * 
+ */
 public class FileCopySocketConnectionUtil {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FileCopySocketConnectionUtil.class);
-	public static final String DEFAULT_KEY = "550b62e8018e8b42ef2c31996746a84cc3bfee63ff7bcfafbf5091a37dbed09b";
 
-	public static byte[] getRandomKey() throws NoSuchAlgorithmException {
-		KeyGenerator keyGen = KeyGenerator.getInstance(ALGO);
-		keyGen.init(256);
+	/**
+	 * Generates a Random AES key. Algorithm - AES/CBC/NoPadding
+	 * 
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException 
+	 */
+	public static byte[] getRandomKey() throws NoSuchAlgorithmException, IOException {
+		String algorithm = FileCopyUtil.getPropertyVal(FileCopyConstants.ALGORITHM);
+		String keyStrength = FileCopyUtil.getPropertyVal(FileCopyConstants.KEY_STRENGTH);
+		int strength = Integer.parseInt(keyStrength);
+		KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
+		keyGen.init(strength);
 		SecretKey secretKey = keyGen.generateKey();
 		byte[] keyByte = secretKey.getEncoded();
 		return keyByte;
 	}
 
-	public static final String ALGO = "AES/CBC/NoPadding";
 
-	public static String encryptPwd(String password, String sKey,
-			long timeInMillis) throws DecoderException,
-			NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+	/**
+	 * Encrypts the password using a Key as well as
+	 * 
+	 * @param password
+	 * @param sKey
+	 * @param timeInMillis
+	 * @return
+	 * @throws DecoderException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws IOException 
+	 */
+	public static String encryptPwd(String password, String sKey)
+			throws DecoderException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, IOException {
+		String algorithm = FileCopyUtil.getPropertyVal(FileCopyConstants.ALGORITHM);
+		String cipherMode = FileCopyUtil.getPropertyVal(FileCopyConstants.CIPHER_MODE);
+		String padding = FileCopyUtil.getPropertyVal(FileCopyConstants.CIPHER_PADDING);
+
 		byte[] keyBytes = Hex.decodeHex(sKey.toCharArray());
-		Key key = new SecretKeySpec(keyBytes, ALGO);
-		Cipher cipher = Cipher.getInstance(ALGO);
+		Key key = new SecretKeySpec(keyBytes, algorithm);
+		//Cipher cipher = Cipher.getInstance(algorithm+"/"+cipherMode+"/"+padding);
+		Cipher cipher = Cipher.getInstance(algorithm);
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		String pwdInput = "PASSWORD=" + password + "$^#TIMEINMILLIS="
-				+ timeInMillis;
-		byte[] encbyte = cipher.doFinal(pwdInput.getBytes());
+
+		PasswordWrapper pwdWrapper = new PasswordWrapper(password);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream objos = new ObjectOutputStream(baos);
+			objos.writeObject(pwdWrapper);
+
+			objos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		byte[] encbyte = cipher.doFinal(baos.toByteArray());
 
 		char[] hexEncPwd = Hex.encodeHex(encbyte);
 		return new String(hexEncPwd);
 
 	}
+	
+	public static PasswordWrapper decryptPwd(String encPwd, String sKey)
+			throws DecoderException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, IOException, ClassNotFoundException {
+		String algorithm = FileCopyUtil.getPropertyVal(FileCopyConstants.ALGORITHM);
+		String cipherMode = FileCopyUtil.getPropertyVal(FileCopyConstants.CIPHER_MODE);
+		String padding = FileCopyUtil.getPropertyVal(FileCopyConstants.CIPHER_PADDING);
 
-	public static Socket getSocket(String host, int port,boolean securemode)
+		
+		byte[] keyBytes = Hex.decodeHex(sKey.toCharArray());
+		Key key = new SecretKeySpec(keyBytes, algorithm);
+		Cipher cipher = Cipher.getInstance(algorithm+"/"+cipherMode+"/"+padding);
+		cipher.init(Cipher.DECRYPT_MODE, key);
+		
+		byte[] pwdBytes = Hex.decodeHex(encPwd.toCharArray());
+		
+		byte[] decbyte = cipher.doFinal(pwdBytes);
+		ByteArrayInputStream bais = new ByteArrayInputStream(decbyte);
+
+		ObjectInputStream ois = new ObjectInputStream(bais);
+		PasswordWrapper pwdWrapper = (PasswordWrapper)ois.readObject();
+		
+		return pwdWrapper;
+
+	}
+	
+	
+
+	/**
+	 * Get a Socket Connection. When secure mode is true, opens a socket and
+	 * initiates a handshake, if successful returns the socket. If handshake
+	 * fails, reads the ccertificate from the server and adds to the truststore
+	 * and gets a Socket and returns it.
+	 * 
+	 * @param host
+	 * @param port
+	 * @param securemode
+	 *            if false, returns a plain socket, whereas returns a SSLSocket
+	 *            when true
+	 * @return
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws CertificateException
+	 * @throws KeyManagementException
+	 */
+	public static Socket getSocket(String host, int port, boolean securemode)
 			throws UnknownHostException, IOException, KeyStoreException,
 			NoSuchAlgorithmException, CertificateException,
 			KeyManagementException {
-		int timeout = Integer.parseInt(FileCopyUtil.getPropertyVal(FileCopyConstants.CLIENT_TIMEOUT));
-		if(securemode == false){
+		int timeout = Integer.parseInt(FileCopyUtil
+				.getPropertyVal(FileCopyConstants.CLIENT_TIMEOUT));
+		if (securemode == false) {
 			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress(host,port), timeout);
+			socket.connect(new InetSocketAddress(host, port), timeout);
 			return socket;
 		}
 		SSLSocket socket = (SSLSocket) SSLSocketFactory.getDefault()
@@ -98,11 +195,9 @@ public class FileCopySocketConnectionUtil {
 
 		} catch (SSLException s) {
 			socket.close();
-			logger.info(
-					"Error in SSL Socket. Hence loading the socket to keystore::");
+			logger.info("Error in SSL Socket. Hence loading the socket to keystore::");
 		}
 
-		
 		File certFile = new File("./filecopykeystoreclient.jks");
 		InputStream in = new BufferedInputStream(new FileInputStream(certFile));
 		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -120,23 +215,23 @@ public class FileCopySocketConnectionUtil {
 		context.init(null, new TrustManager[] { trustManager }, null);
 		SSLSocketFactory factory = context.getSocketFactory();
 		socket = (SSLSocket) factory.createSocket(host, port);
-		 try {
-	            System.out.println("Starting SSL handshake...");
-	         
-	            socket.startHandshake();
-	            socket.close();
-	            System.out.println();
-	            System.out.println("No errors, certificate is already trusted");
-	        } catch (SSLException e) {
-	            System.out.println();
-	            e.printStackTrace(System.out);
-	        }
-		
+		try {
+			System.out.println("Starting SSL handshake...");
+
+			socket.startHandshake();
+			socket.close();
+			System.out.println();
+			System.out.println("No errors, certificate is already trusted");
+		} catch (SSLException e) {
+			System.out.println();
+			e.printStackTrace(System.out);
+		}
+
 		X509Certificate[] chain = trustManager.chain;
 		if (chain == null) {
 			logger.error("Could not obtain server certificate chain");
-			//throw new IOException(
-				//	"Error in Connecting to Server, Could not obtain server certificate chain");
+			// throw new IOException(
+			// "Error in Connecting to Server, Could not obtain server certificate chain");
 		}
 
 		System.out.println();
@@ -179,13 +274,12 @@ public class FileCopySocketConnectionUtil {
 		OutputStream out = new FileOutputStream("./filecopykeystoreclient.jks");
 		ks.store(out, "password".toCharArray());
 		out.close();
-		
-		socket = (SSLSocket) SSLSocketFactory.getDefault()
-				.createSocket();
+
+		socket = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
 		socket.setSoTimeout(timeout);
 		socket.connect(new InetSocketAddress(host, port));
 		socket.startHandshake();
-		
+
 		return socket;
 
 	}

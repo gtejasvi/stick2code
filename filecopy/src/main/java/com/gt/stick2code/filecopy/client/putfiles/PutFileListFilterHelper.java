@@ -5,8 +5,15 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,16 +31,18 @@ public class PutFileListFilterHelper {
 	String host;
 	int port;
 	String key;
+	String password;
 
-	public PutFileListFilterHelper(String host, int port,String key) {
+	public PutFileListFilterHelper(String host, int port,String password,String key) {
 		this.host = host;
 		this.port = port;
+		this.password = password;
 		this.key = key;
 	}
 
 	public List<FileDetails> process(FileCopyParameters params,
 			List<FileDetails> fileDetailsList) throws UnknownHostException,
-			IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		Socket socket = new Socket(host, port);
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -42,7 +51,7 @@ public class PutFileListFilterHelper {
 			bos = new BufferedOutputStream(socket.getOutputStream());
 
 				if (ReadWriteUtil.connectToServer(bis, bos,
-						RequestTypeEnum.PUTFILTERFILESLIST, params,key)) {
+						RequestTypeEnum.PUTFILTERFILESLIST, params,password,key)) {
 					logger.info("PUTFILTERFILESLIST Request Acknowledged");
 					ReadWriteUtil.writeObjectToStream(bos, fileDetailsList);
 					@SuppressWarnings("unchecked")

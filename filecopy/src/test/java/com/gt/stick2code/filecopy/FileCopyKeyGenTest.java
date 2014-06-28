@@ -2,8 +2,15 @@ package com.gt.stick2code.filecopy;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,10 +29,20 @@ public class FileCopyKeyGenTest {
 	}
 
 	@Test
-	public void testGetRandomKey() throws NoSuchAlgorithmException {
+	public void testGetRandomKey() throws NoSuchAlgorithmException, IOException {
 		byte[] key = FileCopySocketConnectionUtil.getRandomKey();
 		;
 		System.out.println(Hex.encodeHex(key));
 	}
+	
+	@Test
+	public void testEncPwd() throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
+		byte[] keyByte = FileCopySocketConnectionUtil.getRandomKey();
+		String keyString = new String(Hex.encodeHex(keyByte));
+		String pwd = FileCopySocketConnectionUtil.encryptPwd("TEST", keyString);
+		System.out.println("Pwd::"+pwd);
+	
+	}
+
 
 }

@@ -5,14 +5,19 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.net.ssl.SSLSocket;
 
+import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +35,14 @@ public class GetFileListHelper {
 	
 	String host;
 	int port;
+	String password;
 	String key;
 	boolean securemode;
 	
-	public GetFileListHelper(String host,int port,boolean securemode,String key){
+	public GetFileListHelper(String host,int port,boolean securemode,String password,String key){
 		this.host = host;
 		this.port = port;
+		this.password = password;
 		this.key = key;
 		this.securemode = securemode;
 	}
@@ -55,9 +62,14 @@ public class GetFileListHelper {
 	 * @throws NoSuchAlgorithmException 
 	 * @throws KeyStoreException 
 	 * @throws KeyManagementException 
+	 * @throws DecoderException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * @throws NoSuchPaddingException 
+	 * @throws InvalidKeyException 
 	 */
 	public List<FileDetails> processGetFileListFromSource(FileCopyParameters params)
-			throws UnknownHostException, IOException, ClassNotFoundException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+			throws UnknownHostException, IOException, ClassNotFoundException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
 		//Socket socket = new Socket(host, port);
 		Socket socket = FileCopySocketConnectionUtil.getSocket(host, port,securemode);
 		
@@ -67,7 +79,7 @@ public class GetFileListHelper {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
 			
-			if (ReadWriteUtil.connectToServer(bis, bos, RequestTypeEnum.GETFILELIST, params,key)) {
+			if (ReadWriteUtil.connectToServer(bis, bos, RequestTypeEnum.GETFILELIST, params,password,key)) {
 				ReadWriteUtil.writeObjectToStream(bos, Ack.READY);
 
 				@SuppressWarnings("unchecked")
