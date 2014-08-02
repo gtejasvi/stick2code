@@ -108,6 +108,8 @@ public class FileCopySocketServer extends Thread {
 			threads = Integer.parseInt(args[argCnt++]);
 		}
 
+		logger.debug("Secure Mode::" + securemode);
+		logger.debug("Binding Socket::" + port);
 		if (securemode) {
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory
 					.getDefault();

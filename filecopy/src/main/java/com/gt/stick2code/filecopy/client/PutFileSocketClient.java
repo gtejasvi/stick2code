@@ -3,7 +3,10 @@ package com.gt.stick2code.filecopy.client;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +72,12 @@ public class PutFileSocketClient extends Thread {
 	 * @throws NoSuchPaddingException 
 	 * @throws NoSuchAlgorithmException 
 	 * @throws InvalidKeyException 
+	 * @throws CertificateException 
+	 * @throws KeyStoreException 
+	 * @throws KeyManagementException 
 	 */
 	public static void main(String[] arg) throws IOException,
-			ClassNotFoundException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
+			ClassNotFoundException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException, KeyManagementException, KeyStoreException, CertificateException {
 
 		String usage = "Usage : <Host> <Port> <Src file/folder> <Targer file/Folder> <[threads]> <[max file chunk]> [-R for Recursive]";
 
@@ -149,6 +155,8 @@ public class PutFileSocketClient extends Thread {
 		fileCopyParameters.setSourceFile(sourceFile);
 		fileCopyParameters.setTargetFile(targetFile);
 		fileCopyParameters.setTransferChunkSize(transferChunkSize);
+		
+		logger.debug("File Transfer Size ::"+ transferChunkSize);
 
 		PutFileSocketClient client = new PutFileSocketClient(host, port,securemode,
 				fileCopyParameters, threads, password,key);
@@ -156,7 +164,7 @@ public class PutFileSocketClient extends Thread {
 	}
 
 	private void process() throws UnknownHostException, IOException,
-			ClassNotFoundException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
+			ClassNotFoundException, InterruptedException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException, KeyManagementException, KeyStoreException, CertificateException {
 		logger.info("Fetch the File List");
 		List<FileDetails> fileDetailList = FileCopyUtil.getFileDetailList(
 				params.getSourceFile(), params.isRecursive(), threads);
@@ -165,7 +173,7 @@ public class PutFileSocketClient extends Thread {
 		List<FileDetails> filteredFileDetailsList = fileDetailList;
 		if (params.isOverwrite() == false) {
 			PutFileListFilterHelper filter = new PutFileListFilterHelper(host,
-					port, password,key);
+					port,securemode, password,key);
 			filteredFileDetailsList = filter.process(params, fileDetailList);
 		}
 		logger.info("Files To Send ::" + filteredFileDetailsList.size());
@@ -175,19 +183,19 @@ public class PutFileSocketClient extends Thread {
 							params.getTransferChunkSize());
 			Map<Integer, List<FileDetails>> threadListMap = FileCopyUtil
 					.getFileListForThread(splitFileDetailsList, threads);
-			PutFilesHelper putFiles = new PutFilesHelper(host, port, null,
+			PutFilesHelper putFiles = new PutFilesHelper(host, port,securemode, null,
 					params, password, key);
 			putFiles.processPutFilesToTarget(threadListMap, params);
 
 			PutFilesMergeHelper mergeHelper = new PutFilesMergeHelper(host,
-					port, splitFileDetailsList, params,password, key);
+					port, securemode,splitFileDetailsList, params,password, key);
 			mergeHelper.process();
 
 			logger.info("Files Merged Successfully");
 			System.out.println("Files Merged Successfully");
 
 			PutFilesValidateHelper validationHelper = new PutFilesValidateHelper(
-					host, port, splitFileDetailsList, params, password,key);
+					host, port, securemode,splitFileDetailsList, params, password,key);
 			validationHelper.process();
 
 			logger.info("Files Validation Successfully..");

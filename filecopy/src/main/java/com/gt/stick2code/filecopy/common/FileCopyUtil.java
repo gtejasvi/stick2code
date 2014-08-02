@@ -375,10 +375,13 @@ public class FileCopyUtil {
 		for (FileDetails fileDetails : fileDetailList) {
 			if (fileDetails.getFileLength() > maxTransferSize) {
 				int filePart = 1;
-				for (int offset = 0; offset < fileDetails.getFileLength();) {
+				for (long offset = 0; offset < fileDetails.getFileLength();) {
 					FileDetails splitFileDetail = new FileDetails();
+					
 					String additionalFileExtn = (filePart > 1 ? ".filemerge.part." + filePart
 							: "");
+					
+					logger.debug("Spliting file Size::Cnt["+filePart+"]["+maxTransferSize+"], FIleSize["+fileDetails.getFileLength()+"], offset["+offset+"]");
 					splitFileDetail.setZipFileName(fileDetails
 							.getZipFileName());
 					splitFileDetail.setZipFilePartName(fileDetails.getZipFileName()

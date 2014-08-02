@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
@@ -24,6 +27,7 @@ import com.gt.stick2code.filecopy.common.FileCopyUtil;
 import com.gt.stick2code.filecopy.common.FileDetails;
 import com.gt.stick2code.filecopy.common.ReadWriteUtil;
 import com.gt.stick2code.filecopy.common.RequestTypeEnum;
+import com.gt.stick2code.filecopy.security.FileCopySocketConnectionUtil;
 
 public class PutFilesHelper implements Runnable {
 
@@ -32,18 +36,20 @@ public class PutFilesHelper implements Runnable {
 
 	String host;
 	int port;
+	boolean securemode=false;
 	long timeout = 1000000;
 	List<FileDetails> fileDetailList;
 	FileCopyParameters params;
 	String password;
 	String key;
 
-	public PutFilesHelper(String host, int port,
+	public PutFilesHelper(String host, int port,boolean securemode,
 			List<FileDetails> fileDetailList, FileCopyParameters params,
 			String password, String key) {
 		super();
 		this.host = host;
 		this.port = port;
+		this.securemode = securemode;
 		this.fileDetailList = fileDetailList;
 		this.params = params;
 		this.password = password;
@@ -72,6 +78,15 @@ public class PutFilesHelper implements Runnable {
 			} catch (DecoderException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (KeyManagementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (KeyStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CertificateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} catch (UnknownHostException e) {
 			logger.error("", e);
@@ -94,10 +109,14 @@ public class PutFilesHelper implements Runnable {
 	 * @throws NoSuchPaddingException 
 	 * @throws NoSuchAlgorithmException 
 	 * @throws InvalidKeyException 
+	 * @throws CertificateException 
+	 * @throws KeyStoreException 
+	 * @throws KeyManagementException 
 	 */
 	private void processPutFilesToTarget() throws UnknownHostException,
-			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
-		Socket socket = new Socket(host, port);
+			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException, KeyManagementException, KeyStoreException, CertificateException {
+		//Socket socket = new Socket(host, port);
+		Socket socket = FileCopySocketConnectionUtil.getSocket(host, port,securemode);
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 
@@ -131,7 +150,7 @@ public class PutFilesHelper implements Runnable {
 		for (int thread : threadListMap.keySet()) {
 			List<FileDetails> fileDetailList = threadListMap.get(thread);
 
-			PutFilesHelper putFiles = new PutFilesHelper(host, port,
+			PutFilesHelper putFiles = new PutFilesHelper(host, port,securemode,
 					fileDetailList, fileCopyParameters,password, key);
 
 			Thread th = new Thread(putFiles);

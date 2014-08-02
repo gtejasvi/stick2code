@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -21,6 +24,7 @@ import com.gt.stick2code.filecopy.common.FileCopyParameters;
 import com.gt.stick2code.filecopy.common.FileDetails;
 import com.gt.stick2code.filecopy.common.ReadWriteUtil;
 import com.gt.stick2code.filecopy.common.RequestTypeEnum;
+import com.gt.stick2code.filecopy.security.FileCopySocketConnectionUtil;
 
 public class PutFilesValidateHelper  {
 
@@ -30,17 +34,19 @@ public class PutFilesValidateHelper  {
 
 	String host;
 	int port;
+	boolean securemode;
 	long timeout = 1000000;
 	List<FileDetails> fileDetailList;
 	FileCopyParameters params;
 	String password;
 	String key;
 
-	public PutFilesValidateHelper(String host, int port,
+	public PutFilesValidateHelper(String host, int port,boolean securemode,
 			List<FileDetails> fileDetailList, FileCopyParameters params,String password,String key) {
 		super();
 		this.host = host;
 		this.port = port;
+		this.securemode = securemode;
 		this.fileDetailList = fileDetailList;
 		this.params = params;
 		this.password = password;
@@ -65,10 +71,14 @@ public class PutFilesValidateHelper  {
 	 * @throws NoSuchPaddingException 
 	 * @throws NoSuchAlgorithmException 
 	 * @throws InvalidKeyException 
+	 * @throws CertificateException 
+	 * @throws KeyStoreException 
+	 * @throws KeyManagementException 
 	 */
 	public void process() throws UnknownHostException,
-			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException {
-		Socket socket = new Socket(host, port);
+			IOException, ClassNotFoundException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, DecoderException, KeyManagementException, KeyStoreException, CertificateException {
+		//Socket socket = new Socket(host, port);
+		Socket socket = FileCopySocketConnectionUtil.getSocket(host, port,securemode);
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 
