@@ -50,11 +50,13 @@ public class Crc32Util implements Runnable{
 		threads = threads < 1 ? 1 : threads;
 		Thread[] threadArr = new Thread[threads];
 		List<Crc32Util> statusList = new ArrayList<Crc32Util>();
-		
+		System.out.println("Total Files To Process::"+fileDetailList.size());
+		int cnt = 0;
 		for(FileDetails fileDetails : fileDetailList){
 			File file = new File(relativePath + File.separator + fileDetails.getZipFileName());
 			Crc32Util getCrcUtil = new Crc32Util(fileDetails,file);
 			statusList.add(getCrcUtil);
+			logger.debug("CRC For["+cnt+"] of ["+fileDetailList.size()+"]");
 			synchronized (threadArr) {
 				Thread th = getThread(threadArr,getCrcUtil);
 				th.start();
