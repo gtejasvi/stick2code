@@ -1,0 +1,56 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slider</title>
+    <!-- the Foundation Grid Has been incorporated into app.css-->
+    <link rel="stylesheet" href="css/slider.css" />
+  </head>
+  <body >
+	<div class='container-fluid' data-ng-app='sliderapp'>
+		<div class='row'>
+			<div class='col-xs-12' data-ng-controller='sliderAppCtrl'>
+				<div  class='row' data-ng-init='moveSlider="slider1"'>
+					<div class='col-xs-4 text-center'>
+						<div>
+						<span><a id='slider1' data-ng-click='moveSlider="slider1"'>Slider1</a></span>
+						</div>
+						
+					</div>
+					<div class='col-xs-4 text-center'>
+						<div>
+						<span><a id='slider2' data-ng-click='moveSlider="slider2"'>Slider2</a></span>
+						</div>
+					</div>
+					<div class='col-xs-4 text-center'>
+						<div>
+						<span><a id='slider3' data-ng-click='moveSlider="slider3"'>Slider3</a></span>
+						</div>
+					</div>
+				</div>
+				<underline-slider duration='3' slider-class='"sliderdownarrow"' selector='moveSlider' selector-map='{slider1 : 0,slider2 : 1,slider3 : 2}' > 
+					<div class='row visible-xs-block'>
+						<div class='col-xs-4 text-center'>
+							<div class='sliderdownarrow'  ></div>
+						</div>
+						<div class='col-xs-4 text-center'>
+							<div class='sliderdownarrow'  ></div>
+						</div>
+						<div class='col-xs-4 text-center'>
+							<div class='sliderdownarrow'  ></div>
+						</div>
+
+					</div>
+				</underline-slider>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
+  	<script src="sliderapp.js"></script>
+
+  </body>
+ </html>
+
