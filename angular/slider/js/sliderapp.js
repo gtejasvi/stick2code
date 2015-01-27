@@ -66,8 +66,20 @@ angular.module('sliderapp').directive('underlineSlider',['$compile','$timeout',f
 			}
 
 			//console.log(sliderEl);
-
+			var slideCompleteFunc;
+			var promise;
+			var prevElement;
+			var newElement;
 			$scope.$watch(function(){return $scope.selector},function(newValue,oldValue){
+				if(angular.isDefined(promise)){
+					var promiseRet = $timeout.cancel(promise);
+					if(promiseRet){
+						slideCompleteFunc();
+						promise = null;
+						console.log('Promise Fuc');
+					}
+				}
+
 				var prevChange = angular.element(document.getElementById(oldValue));
 				var curChange = angular.element(document.getElementById(newValue));
 				var prevElPos = $scope.selectorMap[oldValue];
@@ -98,13 +110,21 @@ angular.module('sliderapp').directive('underlineSlider',['$compile','$timeout',f
 					//To ensure that the animation is not edgy the slider should be floated and the size should be controlled using the 
 					//width of the parent
 					sliderPrevEl.attr('style','left:'+moveLeft+'px;');
-					$timeout(function(){
-						sliderPrevEl.removeClass('ng-hide');
-						sliderPrevEl.addClass('ng-hide');
-						sliderPrevEl.attr('style','');
-						sliderNewEl.removeClass('ng-hide');
+					//Finish execution 
+					prevElement = sliderPrevEl;
+					newElement = sliderNewEl;
+					slideCompleteFunc = function(){
+						prevElement.removeClass('ng-hide');
+						prevElement.addClass('ng-hide');
+						prevElement.attr('style','');
+						newElement.removeClass('ng-hide');
 
-					},$scope.duration * 1000);
+					}
+
+					promise = $timeout(function(){
+						slideCompleteFunc();
+						},
+						$scope.duration * 1000);
 
 			});
 

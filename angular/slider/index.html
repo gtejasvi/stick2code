@@ -6,6 +6,7 @@
     <title>Slider</title>
     <!-- the Foundation Grid Has been incorporated into app.css-->
     <link rel="stylesheet" href="css/slider.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
   </head>
   <body >
 	<div class='container-fluid' data-ng-app='sliderapp'>
@@ -30,7 +31,7 @@
 					</div>
 				</div>
 				<underline-slider duration='3' slider-class='"sliderdownarrow"' selector='moveSlider' selector-map='{slider1 : 0,slider2 : 1,slider3 : 2}' > 
-					<div class='row visible-xs-block'>
+					<div class='row'>
 						<div class='col-xs-4 text-center'>
 							<div class='sliderdownarrow'  ></div>
 						</div>
@@ -48,8 +49,8 @@
 			</div>
 		</div>
 	</div>
-  	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
-  	<script src="sliderapp.js"></script>
+  	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
+  	<script src="js/sliderapp.js"></script>
 
   </body>
  </html>
