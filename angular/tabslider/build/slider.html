@@ -1,0 +1,26 @@
+
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title cataapp="cataapp"></title>
+    <link rel="stylesheet" href="css/slider.css"/>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+    <script src="scripts/slider.js"></script>
+  </head>
+  <body>
+    <div data-ng-app="tabselector" data-ng-controller="tabParentCtrl" data-ng-init="tabselected=&quot;tab1&quot;;tabactive=&quot;tab1&quot;" class="page-wrp">
+      <div class="tab-wrp">
+        <animated-tabs duration="{{800}}" selected-class="tab-active" data-ng-init="tabselected=&quot;tab1&quot;;tabactive=tabselected" selected="tabselected" tab-active="tabactive">
+          <div id="tab1" data-ng-class="{&quot;tab-active&quot; : &quot;tab1&quot; == tabactive}" data-ng-click="tabselected=&quot;tab1&quot;" class="tab-main-1">
+            <div class="tab-heading">Tab 1</div>
+          </div>
+          <div id="tab2" data-ng-class="{&quot;tab-active&quot; : &quot;tab2&quot; == tabactive}" data-ng-click="tabselected=&quot;tab2&quot;" class="tab-main-2">
+            <div class="tab-heading">Tab 2</div>
+          </div>
+        </animated-tabs>
+      </div>
+    </div>
+  </body>
+</html>

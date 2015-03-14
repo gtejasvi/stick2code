@@ -1,0 +1,51 @@
+.tab-wrp {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  cursor: pointer; }
+
+.tab-main, .tab-main-1, .tab-main-2 {
+  display: inline-block;
+  background-color: transparent;
+  text-align: center;
+  position: relative;
+  vertical-align: top; }
+  .tab-main.tab-active div, .tab-active.tab-main-1 div, .tab-active.tab-main-2 div {
+    color: #fff;
+    background-color: #64b7b3;
+    height: 100%; }
+
+.tab-main-1 {
+  width: 100px; }
+
+.tab-main-2 {
+  width: 150px; }
+
+.tab-active div {
+  float: left;
+  position: relative;
+  width: 100%; }
+.tab-active:before {
+  float: left;
+  position: absolute;
+  width: 100%;
+  height: 102%;
+  height: calc(100% + 5px);
+  top: -5px;
+  left: 0px;
+  content: "";
+  background-color: #64b7b3; }
+
+.tab-highlighter {
+  position: absolute;
+  background-color: #64b7b3;
+  top: -5px;
+  height: 100%;
+  height: calc( 100% + 5px);
+  float: left;
+  -webkit-transition: all 0.8s linear;
+          transition: all 0.8s linear; }
+  .tab-highlighter.highlighter-hidden {
+    visibility: hidden; }

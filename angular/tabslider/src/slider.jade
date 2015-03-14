@@ -1,0 +1,19 @@
+html
+	head
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		title('cataapp')
+		link(rel="stylesheet",href="css/slider.css")
+		script(src='//code.jquery.com/jquery-1.11.2.min.js')
+		script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js')
+		script(src='scripts/slider.js')
+	body
+		.page-wrp(data-ng-app='tabselector' data-ng-controller='tabParentCtrl' data-ng-init='tabselected="tab1";tabactive="tab1"' )
+			.tab-wrp
+				animated-tabs(duration='{{800}}' selected-class='tab-active' data-ng-init='tabselected="tab1";tabactive=tabselected' selected='tabselected' tab-active='tabactive')
+					.tab-main-1(id="tab1" data-ng-class='{"tab-active" : "tab1" == tabactive}' data-ng-click='tabselected="tab1"')
+						.tab-heading Tab 1
+					.tab-main-2(id="tab2" data-ng-class='{"tab-active" : "tab2" == tabactive}' data-ng-click='tabselected="tab2"')
+						.tab-heading Tab 2
+
+
